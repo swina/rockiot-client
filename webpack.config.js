@@ -2,10 +2,10 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './app/gauge.js',//index.js',
+  entry: './app/rockiot.server.js',//index.js',
   output: {
-    library: 'iotgauge',
-    filename: 'gauge.js',//'main.js',
+    library: 'rockiot',
+    filename: 'rockiot.server.js',//'gauge.js',//'main.js',
     path: path.resolve(__dirname, 'build'),
   },
   module: {
