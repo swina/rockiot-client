@@ -4,7 +4,7 @@
             <meta charset="utf-8">
             <title>iotiscool-c</title>
             <!--<script src="main.js"></script>-->
-            <script src="rockiot.server.js"></script>
+            <script src="rockiot.client.js"></script>
     </head>
     <body>
         <a href="javascript:void(0)" class="hide" onclick="subscribeDevice()">Start</a>
@@ -57,7 +57,7 @@
       storage: window.localStorage,
       timeout: 5000
     })
-
+    console.log ( client )
     function subscribeDevice(){
       //rockiot.topic ( action , topic)
       //@action: subscribe/unsubscribe
@@ -99,6 +99,6 @@
       document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";
       console.log ( 'payload=>' , payload )
     })
-    
+
     </script>
 </html>

@@ -1,12 +1,21 @@
+const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './app/rockiot.server.js',//index.js',
+  entry: './app/rockiot.client.js',
   output: {
     library: 'rockiot',
-    filename: 'rockiot.server.js',//'gauge.js',//'main.js',
+    filename: 'rockiot.client.js',
     path: path.resolve(__dirname, 'build'),
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+      }),
+    ],
   },
   module: {
     rules: [
