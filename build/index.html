@@ -42,6 +42,11 @@
 
     </style>
   <script>
+    //create rockiot client (websocket)
+    //@url : rockiot-api URL
+    //@login: rockiot-api login info { user: username , password: password , strategy: strategy }
+    //@storage: rockiot-api JWT storage location (default localStorage)
+    //@timeout: rockiot-api timeout (ms)
     const client = rockiot.client({
       url: 'http://localhost:3030',
       login: {
@@ -54,6 +59,9 @@
     })
 
     function subscribeDevice(){
+      //rockiot.topic ( action , topic)
+      //@action: subscribe/unsubscribe
+      //@topic : { url: mqtt broker url , port: mqtt broker port , topic: mqtt topic, name: device name}
       rockiot.topic('subscribe', {
         url: 'http://test.mosquitto.org',
         port: '1883',
@@ -76,6 +84,16 @@
       })
     }
 
+    //client.api.service('mqtt/realtime').on('payload')
+    //get realtime data from subscribed topics
+    //return the following payload
+    //  {
+    //    msg: value,
+    //    date: dateTime,
+    //    topic: mqtt broker topic,
+    //    device: device name,
+    //    user: rockiot-api user id (authenticated)
+    //  }
     client.api.service('mqtt/realtime').on('payload', (payload) => {
       document.getElementById('payload').innerText = parseFloat(payload.msg).toFixed(2);
       document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";

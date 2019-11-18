@@ -32,7 +32,6 @@ function client(options){
     const apiClient =  api.authenticate().then(resp=> {
         return resp
     }).catch ( error => {
-        console.log ( 'login default=>' , options.login  )
         api.authenticate({
           email: options.login.user,
           password: options.login.password,
@@ -53,18 +52,12 @@ function authenticate(authServer,options){
     authServer.authenticate(
       options.login
     ).then ( user => {
-      console.log ( 'authenticated')
       return user
     }).catch ( error => {
-        return error
+      return error
     })
 }
 
-async function realtime(){
-  return app.service('gateway/realtime').on('payload',function(payload){
-    return payload
-  })
-}
 
 async function topic( action , topic){
   const response = await app.service('topic/' + action ).create(topic).then(resp=>{
@@ -77,14 +70,7 @@ async function topic( action , topic){
 
 
 
-const server = feathers;
-
 module.exports = {
-  io,
-  socketio,
-  server,
-  auth,
   client,
-  topic,
-  realtime
+  topic
 }
