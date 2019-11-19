@@ -2,21 +2,20 @@
 <html>
     <head>
             <meta charset="utf-8">
-            <title>iotiscool-c</title>
-            <!--<script src="main.js"></script>-->
+            <title>rockiot-client</title>
             <script src="rockiot.client.js"></script>
     </head>
     <body>
-        <a href="javascript:void(0)" class="hide" onclick="subscribeDevice()">Start</a>
-        <a href="javascript:void(0)" class="hide" onclick="unsubscribeDevice()">Stop</a>
+        <h1>rockiot-client demo</h1>
+        <a href="javascript:void(0)" class="hide" onclick="subscribeDevice()">Subscribe</a>
+        <a href="javascript:void(0)" class="hide" onclick="unsubscribeDevice()">Unsubscribe</a>
         <h3 id="payload"></h3>
         <div id="response" class="bar">
           <div class="progress"></div>
         </div>
-        <p>
-            <a href="#" onclick="authenticate()">Login</a>
-
-        </p>
+        <div id="client-response">
+          rockiot-client ><br>
+        </div>
     </body>
     <style>
         body {
@@ -31,7 +30,7 @@
         .bar {
             height:1rem;
             border-radius:4px;
-            border:1px solid black;
+            border:0px solid black;
             width:100%;
         }
         .progress {
@@ -39,15 +38,29 @@
           border-radius:4px;
           height:100%;
         }
-
+        #client-response {
+          padding: 4px;
+          text-align: left;
+          font-size: .8rem;
+          background: #222;
+          color: #dedede;
+          min-height: 15rem;
+          max-height: 15rem;
+          overflow-y: auto;
+          overflow-x: hidden;
+          width: 75%;
+          margin: 0 auto;
+          margin-top: 2rem;
+        }
     </style>
   <script>
+    var codeEl = document.getElementById('client-response')
     //create rockiot client (websocket)
     //@url : rockiot-api URL
     //@login: rockiot-api login info { user: username , password: password , strategy: strategy }
     //@storage: rockiot-api JWT storage location (default localStorage)
     //@timeout: rockiot-api timeout (ms)
-    const client = rockiot.client({
+    rockiot.client({
       url: 'http://localhost:3030',
       login: {
         user: 'admin',
@@ -56,8 +69,18 @@
       },
       storage: window.localStorage,
       timeout: 5000
+    }).then( client => {
+      codeEl.innerText += 'Access Token > ' + String(client.apiClient.accessToken) + '\n'
+      client.api.service('mqtt/realtime').on('payload', (payload) => {
+        document.getElementById('payload').innerText = parseFloat(payload.msg).toFixed(2);
+        document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";
+        codeEl.innerText += JSON.stringify(payload) +'\n'
+        console.log ( 'payload=>' , payload )
+      })
+      return client
     })
-    console.log ( client )
+
+
     function subscribeDevice(){
       //rockiot.topic ( action , topic)
       //@action: subscribe/unsubscribe
@@ -68,6 +91,7 @@
         topic: 'rockiot/garden/outside',
         name: 'Home Garden'
       }).then(resp=>{
+        codeEl.innerText += JSON.stringify(resp)+'\n'
         console.log ( resp )
       })
     }
@@ -80,25 +104,12 @@
         topic: 'rockiot/garden/outside',
         name: 'Home Garden'
       }).then(resp=>{
+        codeEl.innerText += JSON.stringify(resp)+'\n'
         console.log ( resp )
       })
     }
 
-    //client.api.service('mqtt/realtime').on('payload')
-    //get realtime data from subscribed topics
-    //return the following payload
-    //  {
-    //    msg: value,
-    //    date: dateTime,
-    //    topic: mqtt broker topic,
-    //    device: device name,
-    //    user: rockiot-api user id (authenticated)
-    //  }
-    client.api.service('mqtt/realtime').on('payload', (payload) => {
-      document.getElementById('payload').innerText = parseFloat(payload.msg).toFixed(2);
-      document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";
-      console.log ( 'payload=>' , payload )
-    })
+
 
     </script>
 </html>

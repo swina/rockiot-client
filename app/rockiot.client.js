@@ -13,8 +13,8 @@ var options = {
 var app
 var apiClient = {}
 
-function client(options){
-  const api = feathers()
+async function client(options){
+  const api = await feathers()
     .configure(
         socketio (
           io(options.url,{
@@ -27,7 +27,7 @@ function client(options){
       )
     .configure(auth({ storage: window.localStorage }))
     if ( options.login.user ){
-      apiClient =  api.authenticate().then(resp=> {
+      apiClient =  await api.authenticate().then(resp=> {
           return resp
       }).catch ( error => {
           api.authenticate({
