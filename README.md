@@ -37,8 +37,9 @@ const client = rockiot.client({
   },
   storage: window.localStorage,
   timeout: 5000
+}).then ( resp => {
+  return resp
 })
-console.log ( client )
 ...
 </script>
 </body>
@@ -74,11 +75,23 @@ rockiot.topic('unsubscribe', {
 
 ```
 
-#### Get realtime data from the subscribed topics
+#### Get realtime data from the subscribed topics after client connected
 
 
 ```
-client.api.service('mqtt/realtime').on('payload', (payload) => {
-  console.log ( 'payload=>' , payload )
+const client = rockiot.client({
+  url: 'http://localhost:3030',
+  login: {
+    user: 'admin',
+    password: 'password',
+    strategy: 'local'
+  },
+  storage: window.localStorage,
+  timeout: 5000
+}).then ( resp => {
+  resp.api.service('mqtt/realtime').on('payload', (payload) => {
+    console.log ( 'payload=>' , payload )
+  })
+  return resp
 })
 ```
