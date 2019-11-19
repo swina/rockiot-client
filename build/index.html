@@ -9,21 +9,22 @@
         <h1>rockiot-client demo</h1>
         <a href="javascript:void(0)" class="hide" onclick="subscribeDevice()">Subscribe</a>
         <a href="javascript:void(0)" class="hide" onclick="unsubscribeDevice()">Unsubscribe</a>
+
+        <a href="javascript:void(0)" class="hide" onclick="publishDevice()">Publish</a> Payload <input type="text" id="payloadValue" value="10" style="width:2rem;margin-right:1rem;">
         <h3 id="payload"></h3>
-        <div id="response" class="bar">
-          <div class="progress"></div>
-        </div>
+
         <div id="client-response">
-          rockiot-client ><br>
+
         </div>
     </body>
     <style>
         body {
             font-family: monospace;
             font-size:1.3rem;
+            text-align:center;
         }
         h3 { font-size: 5rem; color: crimson; }
-        a { background:#cecece; border-radius:5px; border:1px solid #888; padding-top:2px; padding-bottom:2px ; padding-right:4px; padding-left:4px;text-decoration:none;outline:none; font-size:1.1rem; }
+        a { background:#cecece; border-radius:5px; border:1px solid #888; padding-top:2px; padding-bottom:2px ; padding-right:4px; padding-left:4px;text-decoration:none;outline:none; font-size:.8rem; }
         a:hover {
             background: #333; color:white;
         }
@@ -55,6 +56,7 @@
     </style>
   <script>
     var codeEl = document.getElementById('client-response')
+    var payloadEl = document.getElementById('payloadValue')
     //create rockiot client (websocket)
     //@url : rockiot-api URL
     //@login: rockiot-api login info { user: username , password: password , strategy: strategy }
@@ -73,7 +75,7 @@
       codeEl.innerText += 'Access Token > ' + String(client.apiClient.accessToken) + '\n'
       client.api.service('mqtt/realtime').on('payload', (payload) => {
         document.getElementById('payload').innerText = parseFloat(payload.msg).toFixed(2);
-        document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";
+        //document.querySelector('.progress').style = 'background:#ff000070;width:' + payload.msg + "%;";
         codeEl.innerText += JSON.stringify(payload) +'\n'
         console.log ( 'payload=>' , payload )
       })
@@ -103,6 +105,19 @@
         port: '1883',
         topic: 'rockiot/garden/outside',
         name: 'Home Garden'
+      }).then(resp=>{
+        codeEl.innerText += JSON.stringify(resp)+'\n'
+        console.log ( resp )
+      })
+    }
+
+    function publishDevice(){
+      rockiot.topic('publish', {
+        url: 'http://test.mosquitto.org',
+        port: '1883',
+        topic: 'rockiot/garden/outside',
+        name: 'Home Garden',
+        payload: payloadEl.value
       }).then(resp=>{
         codeEl.innerText += JSON.stringify(resp)+'\n'
         console.log ( resp )
