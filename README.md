@@ -16,7 +16,7 @@ A **rockiot-api** server is required in order to successfully test the client.
 Include **rockiot.client.js** in your HTML page.
 
 ```
-<script src="rockiot.server.js"></script>
+<script src="rockiot.client.js"></script>
 ```
 
 #### Create the client
