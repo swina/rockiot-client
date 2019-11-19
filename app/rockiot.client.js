@@ -5,16 +5,13 @@ const io = require('socket.io-client');
 
 var options = {
   url: 'http://localhost:3030',
-  login: {
-    email: 'admin',
-    password: 'password',
-    strategy: 'local'
-  },
+  login: false,
   storage: window.localStorage,
   timeout: 5000
 }
 
 var app
+var apiClient = {}
 
 function client(options){
   const api = feathers()
@@ -29,20 +26,21 @@ function client(options){
         )
       )
     .configure(auth({ storage: window.localStorage }))
-    const apiClient =  api.authenticate().then(resp=> {
-        return resp
-    }).catch ( error => {
-        api.authenticate({
-          email: options.login.user,
-          password: options.login.password,
-          strategy: options.login.strategy
-        }).then(user=>{
-          console.log ( user )
-          return user
-        }).catch ( err=> {
-          return err
-        })
-    })
+    if ( options.login.user ){
+      apiClient =  api.authenticate().then(resp=> {
+          return resp
+      }).catch ( error => {
+          api.authenticate({
+            email: options.login.user,
+            password: options.login.password,
+            strategy: options.login.strategy
+          }).then(user=>{
+            return user
+          }).catch ( err=> {
+            return err
+          })
+      })
+    }
     app = api
     return  { api, apiClient }
 }
