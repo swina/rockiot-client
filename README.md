@@ -1,6 +1,6 @@
 # rockiot-client
 
-```rockiot-client``` is a wrapper to easily connect a client (browser) to a ```rockiot-api``` server.
+```rockiot-client``` is a wrapper to easily connect a client (browser) to a [rockiot-api](https://github.com/swina/rockiot-api) server.
 
 
 ### Getting started
